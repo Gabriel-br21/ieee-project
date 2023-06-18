@@ -1,0 +1,21 @@
+int celsius = 0;
+int sensor = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(7, OUTPUT);
+  pinMode(A0, INPUT);
+}
+
+void loop() {
+  sensor = analogRead(A0);
+  celsius = map(((sensor - 20) * 3.04), 0, 1023, -40, 125);
+  Serial.print("Temperatura = ");
+  Serial.print(celsius);
+  Serial.println(" C");
+
+  delay(500);
+
+  if (celsius > 32) digitalWrite(7, HIGH);
+  else digitalWrite(7, LOW);
+}
