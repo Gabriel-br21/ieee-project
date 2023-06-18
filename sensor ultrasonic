@@ -1,0 +1,61 @@
+#define vent 4
+
+const int triggerPin = 7; // pino do sensor que envia um pulso
+const int echoPin = 8; // pino do sensor que recebe esse pulso de volta
+
+void setup() {
+ 
+  Serial.begin(9600);
+  pinMode(triggerPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(vent, OUTPUT); // a ventoinha
+}
+
+void loop() {
+  
+  static bool solicitarDistanciaLimite = true;
+  static int distanciaLimite = 0;
+  
+  if (solicitarDistanciaLimite) {
+    
+    Serial.println("Digite a distância limite em centímetros:");
+
+    // a função Serial.available serve para verificar se a porta serial está recebendo algum dado, o ! segue a logica booleana, o que for true ele transforma em false, logo !Serial.available, seria como afirmar que a portal serial não esta recebendo dados
+    // utilizaremos ela dessa forma para exibir de forma continua a distancia
+    while (!Serial.available()) {
+     
+    }
+    
+    distanciaLimite = Serial.parseInt(); // Serial.parseInt() é uma função para a variavel distancialimite procurar o valor recebido 
+    solicitarDistanciaLimite = false; // pra evitar que a mensagem seja printada novamente
+  
+    Serial.print("Distância Limite: ");
+    Serial.print(distanciaLimite);
+    Serial.print(" cm");
+    Serial.println();
+  }
+
+  long duracao;
+  int distanciaMedida;
+  
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  
+  duracao = pulseIn(echoPin, HIGH); // pulseIn captura a duração de um pulso no pino, no instante em que seu nivel logico for HIGH até o LOW 
+  distanciaMedida = duration * 0.034 / 2;
+
+  Serial.print("Distância Medida: ");
+  Serial.print(distanciaMedida);
+  Serial.print(" cm");
+  Serial.println();
+
+  if (distanciaMedida < distanciaLimite){
+    digitalWrite(vent, HIGH);    
+  } else {
+    digitalWrite(vent, LOW);  
+  }
+ 
+}
